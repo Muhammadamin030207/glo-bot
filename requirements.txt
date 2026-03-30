@@ -7,3 +7,4 @@ qrcode
 Pillow
 requests
 openai
+pydantic<2
