@@ -1,0 +1,203 @@
+import asyncio
+
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters import Command
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+
+BOT_TOKEN = "8053359950:AAEI3babbTosuZo0nfJRv58pYpW1OzBsq1w"
+
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher()
+
+countries = {
+    
+  "uzbekistan": {"name":"🇺🇿 Uzbekistan","capital":"Tashkent","population":"36 million","area":"448,978 km²","president":"Shavkat Mirziyoyev","independence":"1991","image":"https://flagcdn.com/w640/uz.png"},
+  "kazakhstan": {"name":"🇰🇿 Kazakhstan","capital":"Astana","population":"19 million","area":"2,724,900 km²","president":"Kassym-Jomart Tokayev","independence":"1991","image":"https://flagcdn.com/w640/kz.png"},
+  "kyrgyzstan": {"name":"🇰🇬 Kyrgyzstan","capital":"Bishkek","population":"7 million","area":"199,951 km²","president":"Sadyr Japarov","independence":"1991","image":"https://flagcdn.com/w640/kg.png"},
+  "tajikistan": {"name":"🇹🇯 Tajikistan","capital":"Dushanbe","population":"10 million","area":"143,100 km²","president":"Emomali Rahmon","independence":"1991","image":"https://flagcdn.com/w640/tj.png"},
+  "turkmenistan": {"name":"🇹🇲 Turkmenistan","capital":"Ashgabat","population":"6 million","area":"488,100 km²","president":"Serdar Berdimuhamedow","independence":"1991","image":"https://flagcdn.com/w640/tm.png"},
+
+  "russia": {"name":"🇷🇺 Russia","capital":"Moscow","population":"146 million","area":"17,098,246 km²","president":"Vladimir Putin","independence":"1991","image":"https://flagcdn.com/w640/ru.png"},
+  "ukraine": {"name":"🇺🇦 Ukraine","capital":"Kyiv","population":"41 million","area":"603,628 km²","president":"Volodymyr Zelenskyy","independence":"1991","image":"https://flagcdn.com/w640/ua.png"},
+  "poland": {"name":"🇵🇱 Poland","capital":"Warsaw","population":"38 million","area":"312,696 km²","president":"Andrzej Duda","independence":"1918","image":"https://flagcdn.com/w640/pl.png"},
+  "germany": {"name":"🇩🇪 Germany","capital":"Berlin","population":"84 million","area":"357,022 km²","president":"Frank-Walter Steinmeier","independence":"1871","image":"https://flagcdn.com/w640/de.png"},
+  "france": {"name":"🇫🇷 France","capital":"Paris","population":"65 million","area":"643,801 km²","president":"Emmanuel Macron","independence":"843","image":"https://flagcdn.com/w640/fr.png"},
+  "italy": {"name":"🇮🇹 Italy","capital":"Rome","population":"59 million","area":"301,340 km²","president":"Sergio Mattarella","independence":"1861","image":"https://flagcdn.com/w640/it.png"},
+  "spain": {"name":"🇪🇸 Spain","capital":"Madrid","population":"48 million","area":"505,990 km²","president":"King Felipe VI","independence":"1492","image":"https://flagcdn.com/w640/es.png"},
+  "uk": {"name":"🇬🇧 United Kingdom","capital":"London","population":"67 million","area":"243,610 km²","president":"King Charles III","independence":"1707","image":"https://flagcdn.com/w640/gb.png"},
+  "netherlands": {"name":"🇳🇱 Netherlands","capital":"Amsterdam","population":"17 million","area":"41,850 km²","president":"King Willem-Alexander","independence":"1581","image":"https://flagcdn.com/w640/nl.png"},
+  "sweden": {"name":"🇸🇪 Sweden","capital":"Stockholm","population":"10.5 million","area":"450,295 km²","president":"King Carl XVI Gustaf","independence":"1523","image":"https://flagcdn.com/w640/se.png"},
+  "norway": {"name":"🇳🇴 Norway","capital":"Oslo","population":"5.5 million","area":"385,207 km²","president":"King Harald V","independence":"1905","image":"https://flagcdn.com/w640/no.png"},
+  "finland": {"name":"🇫🇮 Finland","capital":"Helsinki","population":"5.6 million","area":"338,455 km²","president":"Alexander Stubb","independence":"1917","image":"https://flagcdn.com/w640/fi.png"},
+
+  "turkey": {"name":"🇹🇷 Turkey","capital":"Ankara","population":"85 million","area":"783,356 km²","president":"Recep Tayyip Erdoğan","independence":"1923","image":"https://flagcdn.com/w640/tr.png"},
+  "saudi_arabia": {"name":"🇸🇦 Saudi Arabia","capital":"Riyadh","population":"36 million","area":"2,149,690 km²","president":"King Salman","independence":"1932","image":"https://flagcdn.com/w640/sa.png"},
+  "iran": {"name":"🇮🇷 Iran","capital":"Tehran","population":"88 million","area":"1,648,195 km²","president":"Masoud Pezeshkian","independence":"1979","image":"https://flagcdn.com/w640/ir.png"},
+  "uae": {"name":"🇦🇪 UAE","capital":"Abu Dhabi","population":"10 million","area":"83,600 km²","president":"Mohammed bin Zayed","independence":"1971","image":"https://flagcdn.com/w640/ae.png"},
+  "qatar": {"name":"🇶🇦 Qatar","capital":"Doha","population":"2.7 million","area":"11,586 km²","president":"Tamim bin Hamad Al Thani","independence":"1971","image":"https://flagcdn.com/w640/qa.png"},
+  "israel": {"name":"🇮🇱 Israel","capital":"Jerusalem","population":"9.8 million","area":"22,145 km²","president":"Isaac Herzog","independence":"1948","image":"https://flagcdn.com/w640/il.png"},
+
+  "china": {"name":"🇨🇳 China","capital":"Beijing","population":"1.4 billion","area":"9,596,961 km²","president":"Xi Jinping","independence":"1949","image":"https://flagcdn.com/w640/cn.png"},
+  "japan": {"name":"🇯🇵 Japan","capital":"Tokyo","population":"125 million","area":"377,975 km²","president":"Naruhito","independence":"660 BC","image":"https://flagcdn.com/w640/jp.png"},
+  "south_korea": {"name":"🇰🇷 South Korea","capital":"Seoul","population":"51 million","area":"100,210 km²","president":"Yoon Suk Yeol","independence":"1945","image":"https://flagcdn.com/w640/kr.png"},
+  "india": {"name":"🇮🇳 India","capital":"New Delhi","population":"1.43 billion","area":"3,287,263 km²","president":"Droupadi Murmu","independence":"1947","image":"https://flagcdn.com/w640/in.png"},
+  "pakistan": {"name":"🇵🇰 Pakistan","capital":"Islamabad","population":"241 million","area":"881,913 km²","president":"Asif Ali Zardari","independence":"1947","image":"https://flagcdn.com/w640/pk.png"},
+  "indonesia": {"name":"🇮🇩 Indonesia","capital":"Jakarta","population":"277 million","area":"1,904,569 km²","president":"Joko Widodo","independence":"1945","image":"https://flagcdn.com/w640/id.png"},
+  "thailand": {"name":"🇹🇭 Thailand","capital":"Bangkok","population":"71 million","area":"513,120 km²","president":"King Maha Vajiralongkorn","independence":"1238","image":"https://flagcdn.com/w640/th.png"},
+  "vietnam": {"name":"🇻🇳 Vietnam","capital":"Hanoi","population":"100 million","area":"331,212 km²","president":"To Lam","independence":"1945","image":"https://flagcdn.com/w640/vn.png"},
+  "malaysia": {"name":"🇲🇾 Malaysia","capital":"Kuala Lumpur","population":"33 million","area":"330,803 km²","president":"Sultan Ibrahim","independence":"1957","image":"https://flagcdn.com/w640/my.png"},
+  "singapore": {"name":"🇸🇬 Singapore","capital":"Singapore","population":"5.9 million","area":"728 km²","president":"Tharman Shanmugaratnam","independence":"1965","image":"https://flagcdn.com/w640/sg.png"},
+
+  "usa": {"name":"🇺🇸 United States","capital":"Washington, D.C.","population":"333 million","area":"9,833,520 km²","president":"Joe Biden","independence":"1776","image":"https://flagcdn.com/w640/us.png"},
+  "canada": {"name":"🇨🇦 Canada","capital":"Ottawa","population":"40 million","area":"9,984,670 km²","president":"Justin Trudeau","independence":"1867","image":"https://flagcdn.com/w640/ca.png"},
+  "mexico": {"name":"🇲🇽 Mexico","capital":"Mexico City","population":"129 million","area":"1,964,375 km²","president":"Claudia Sheinbaum","independence":"1810","image":"https://flagcdn.com/w640/mx.png"},
+  "brazil": {"name":"🇧🇷 Brazil","capital":"Brasília","population":"216 million","area":"8,515,767 km²","president":"Lula da Silva","independence":"1822","image":"https://flagcdn.com/w640/br.png"},
+  "argentina": {"name":"🇦🇷 Argentina","capital":"Buenos Aires","population":"46 million","area":"2,780,400 km²","president":"Javier Milei","independence":"1816","image":"https://flagcdn.com/w640/ar.png"},
+  "chile": {"name":"🇨🇱 Chile","capital":"Santiago","population":"19 million","area":"756,102 km²","president":"Gabriel Boric","independence":"1818","image":"https://flagcdn.com/w640/cl.png"},
+  "peru": {"name":"🇵🇪 Peru","capital":"Lima","population":"34 million","area":"1,285,216 km²","president":"Dina Boluarte","independence":"1821","image":"https://flagcdn.com/w640/pe.png"},
+
+  "egypt": {"name":"🇪🇬 Egypt","capital":"Cairo","population":"110 million","area":"1,010,408 km²","president":"Abdel Fattah el-Sisi","independence":"1922","image":"https://flagcdn.com/w640/eg.png"},
+  "nigeria": {"name":"🇳🇬 Nigeria","capital":"Abuja","population":"227 million","area":"923,768 km²","president":"Bola Tinubu","independence":"1960","image":"https://flagcdn.com/w640/ng.png"},
+  "south_africa": {"name":"🇿🇦 South Africa","capital":"Pretoria","population":"60 million","area":"1,221,037 km²","president":"Cyril Ramaphosa","independence":"1910","image":"https://flagcdn.com/w640/za.png"},
+  "morocco": {"name":"🇲🇦 Morocco","capital":"Rabat","population":"37 million","area":"446,550 km²","president":"King Mohammed VI","independence":"1956","image":"https://flagcdn.com/w640/ma.png"},
+  "kenya": {"name":"🇰🇪 Kenya","capital":"Nairobi","population":"55 million","area":"580,367 km²","president":"William Ruto","independence":"1963","image":"https://flagcdn.com/w640/ke.png"},
+  "ethiopia": {"name":"🇪🇹 Ethiopia","capital":"Addis Ababa","population":"126 million","area":"1,104,300 km²","president":"Abiy Ahmed","independence":"1941","image":"https://flagcdn.com/w640/et.png"}
+
+}
+
+user_lang = {}
+
+# ===== TILLAR =====
+langs = {
+    "uz": {
+        "about": (
+            "🤖 Country Info Bot\n\n"
+            "Bu bot orqali siz dunyo davlatlari haqida:\n"
+            "• Poytaxt\n"
+            "• Aholi\n"
+            "• Maydon\n"
+            "• Prezident\n"
+            "• Mustaqillik\n\n"
+            "ma’lumot olasiz."
+        ),
+        "choose_country": "🌍 Davlatni tanlang yoki yozing:",
+        "back": "🔙 Orqaga",
+        "not_found": "❌ Davlat topilmadi"
+    },
+    "ru": {
+        "about": "🤖 Country Info Bot\n\nИнформация о странах мира.",
+        "choose_country": "🌍 Выберите страну:",
+        "back": "🔙 Назад",
+        "not_found": "❌ Страна не найдена"
+    },
+    "en": {
+        "about": "🤖 Country Info Bot\n\nInformation about world countries.",
+        "choose_country": "🌍 Choose a country:",
+        "back": "🔙 Back",
+        "not_found": "❌ Country not found"
+    }
+}
+
+# ===== /START =====
+@dp.message(Command("start"))
+async def start(message: types.Message):
+    kb = ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text="🇺🇿 O‘zbek")],
+            [KeyboardButton(text="🇷🇺 Русский")],
+            [KeyboardButton(text="🇬🇧 English")]
+        ],
+        resize_keyboard=True
+    )
+
+    await message.reply(langs["uz"]["about"], reply_markup=kb)
+
+# ===== TIL TANLASH =====
+@dp.message(lambda m: m.text in ["🇺🇿 O‘zbek", "🇷🇺 Русский", "🇬🇧 English"])
+async def set_language(message: types.Message):
+    if "O‘zbek" in message.text:
+        user_lang[message.chat.id] = "uz"
+    elif "Русский" in message.text:
+        user_lang[message.chat.id] = "ru"
+    else:
+        user_lang[message.chat.id] = "en"
+
+    await send_country_buttons(message.chat.id)
+
+@dp.message(Command("help"))
+async def help_handler(message: types.Message):
+    text = "ℹ️ Buyruqlar:\n\n"
+
+    for key, c in countries.items():
+        text += f"/{key} — {c['name']}\n"
+
+    await message.answer(text)
+
+async def send_country_buttons(chat_id):
+    lang = user_lang.get(chat_id, "uz")
+    t = langs[lang]
+
+    buttons = []
+    for key in countries:
+        buttons.append([
+            KeyboardButton(text=countries[key]["name"])
+        ])
+
+    buttons.append([KeyboardButton(text=t["back"])])
+
+    kb = ReplyKeyboardMarkup(
+        keyboard=buttons,
+        resize_keyboard=True
+    )
+    await bot.send_message(chat_id, t["choose_country"], reply_markup=kb)
+
+
+# ===== DAVLAT MA’LUMOTI =====
+async def send_country(chat_id, key):
+    c = countries[key]
+    text = (
+        f"🌍 {c['name']}\n\n"
+        f"🏙 Poytaxt: {c['capital']}\n"
+        f"👥 Aholi: {c['population']}\n"
+        f"📐 Maydon: {c['area']}\n"
+        f"👤 Prezident: {c['president']}\n"
+        f"📅 Mustaqillik: {c['independence']}"
+    )
+
+    await bot.send_photo(chat_id, photo=c["image"], caption=text)
+
+# ===== MATN HANDLER =====
+@dp.message()
+async def text_handler(message: types.Message):
+    chat_id = message.chat.id
+    text = message.text.strip().lower()
+    lang = user_lang.get(chat_id, "uz")
+    t = langs[lang]
+
+    # /command bo‘lsa
+    if text.startswith("/"):
+        cmd = text.replace("/", "")
+        if cmd in countries:
+            await send_country(chat_id, cmd)
+            return
+
+    if text == t["back"].lower():
+        await send_country_buttons(chat_id)
+        return
+
+    for key, c in countries.items():
+        if text == c["name"].lower():
+            await send_country(chat_id, key)
+            return
+
+    await message.answer(t["not_found"])
+
+
+
+# ===== RUN =====
+async def main():
+    print("✅ Bot ishga tushdi")
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
